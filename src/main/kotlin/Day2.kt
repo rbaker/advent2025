@@ -4,7 +4,7 @@ fun main() {
     var part1 = 0L; var part2 = 0L
     val part1Regex = Regex("(\\w+)\\1")
     val part2Regex = Regex("(\\w+)\\1+")
-    Any::class::class.java.getResourceAsStream("/y2025/day2.txt")?.bufferedReader()?.readText()?.split(",")?.forEach { text ->
+    Any::class::class.java.getResourceAsStream("/day2.txt")?.bufferedReader()?.readText()?.split(",")?.forEach { text ->
         val parts = text.split("-")
         for (i in parts[0].toLong()..parts[1].toLong()) {
             val string = i.toString()
