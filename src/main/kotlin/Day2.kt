@@ -6,7 +6,7 @@ fun main() {
     val part2Regex = Regex("(\\w+)\\1+")
     Any::class::class.java.getResourceAsStream("/day2.txt")?.bufferedReader()?.readText()?.split(",")?.forEach { text ->
         val parts = text.split("-")
-        for (i in parts[0].toLong()..parts[1].toLong()) {
+        (parts[0].toLong()..parts[1].toLong()).forEach {i ->
             val string = i.toString()
             if (part1Regex.matches(string)) part1 += i
             if (part2Regex.matches(string)) part2 += i
