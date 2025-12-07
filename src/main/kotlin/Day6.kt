@@ -8,9 +8,7 @@ fun main() {
     var workingGrid = 0
     (0..<lines[0].length).forEach { idx ->
         var vertical = ""
-        (0..<numOperands).forEach {
-            vertical += lines[it][idx]
-        }
+        (0..<numOperands).forEach { vertical += lines[it][idx] }
         if (vertical.isNotBlank()) grid[workingGrid].second.add(vertical.trim().toLong())
         else workingGrid++
     }
