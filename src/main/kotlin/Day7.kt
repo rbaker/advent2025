@@ -28,7 +28,6 @@ fun part2(map: List<String>): Int {
     map.forEachIndexed { l, line ->
         line.toCharArray().forEachIndexed { i, ch -> if (ch == '^') splitters.add(BinaryTreeNode(Point(l,i))) }
     }
-    splitters.add(BinaryTreeNode(Point(-1,-1)))
     splitters.forEach {
         if (it.value.x != -1) {
             val left = nextSplitterInCol(map, Point(it.value.x, it.value.y - 1))
@@ -37,21 +36,31 @@ fun part2(map: List<String>): Int {
             it.right = splitters.find { it.value == right }
         }
     }
-    return countRootToLeafPaths(splitters[0])
+    var a = countNodes(splitters[0])
+    return a
 }
 
 fun nextSplitterInCol(map: List<String>, point: Point): Point? {
     (point.x..<map.size).forEach { if (map[it][point.y] == '^') return Point(it, point.y) }
     return Point(-1,-1)
 }
-fun countRootToLeafPaths(root: BinaryTreeNode<Point>?): Int {
-    if (root == null) return 0
+fun countRootToLeafPaths(root: BinaryTreeNode<Point>): Int {
+    println("checking ${root.value}")
+    if (root.checked == 2) return 0
     if (root.left == null && root.right == null) return 1
-    print("doing ${root.left?.value?.x} ${root.left?.value?.y}")
-    return countRootToLeafPaths(root.left) + countRootToLeafPaths(root.right)
+    //print("doing ${root.left?.value?.x} ${root.left?.value?.y}")
+    root.checked++
+    return countRootToLeafPaths(root.left!!) + countRootToLeafPaths(root.right!!)
+}
+fun countNodes(node: BinaryTreeNode<Point>?): Int {
+    if (node == null) {
+        return 0
+    }
+    return 1 + countNodes(node.left) + countNodes(node.right)
 }
 class BinaryTreeNode<T>(
     val value: T,
     var left: BinaryTreeNode<T>? = null,
-    var right: BinaryTreeNode<T>? = null
+    var right: BinaryTreeNode<T>? = null,
+    var checked: Int = 0
 )
