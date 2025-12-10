@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation(kotlin("script-runtime"))
+    implementation("com.google.ortools:ortools-java:9.14.6206")
 }
 
 tasks.test {
