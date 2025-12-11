@@ -1,4 +1,4 @@
-import com.sun.source.tree.BinaryTree
+import utils.BinaryTreeNode
 import java.awt.Point
 
 fun main() {
@@ -23,44 +23,34 @@ fun part1(map: List<String>): Int {
     return part1
 }
 
-fun part2(map: List<String>): Int {
+fun part2(map: List<String>): Long {
     val splitters = mutableListOf<BinaryTreeNode<Point>>()
     map.forEachIndexed { l, line ->
         line.toCharArray().forEachIndexed { i, ch -> if (ch == '^') splitters.add(BinaryTreeNode(Point(l,i))) }
     }
+    splitters.add(BinaryTreeNode(Point(-1,-1)))
     splitters.forEach {
         if (it.value.x != -1) {
             val left = nextSplitterInCol(map, Point(it.value.x, it.value.y - 1))
             val right = nextSplitterInCol(map, Point(it.value.x, it.value.y + 1))
-            it.left = splitters.find { it.value == left }
-            it.right = splitters.find { it.value == right }
+            it.left = splitters.find { i -> i.value == left }
+            it.right = splitters.find { i -> i.value == right }
         }
     }
-    var a = countNodes(splitters[0])
-    return a
+    val memo = mutableMapOf<BinaryTreeNode<Point>, Long>()
+    return countRootToLeafPaths(splitters[0], memo)
 }
 
-fun nextSplitterInCol(map: List<String>, point: Point): Point? {
+fun nextSplitterInCol(map: List<String>, point: Point): Point {
     (point.x..<map.size).forEach { if (map[it][point.y] == '^') return Point(it, point.y) }
     return Point(-1,-1)
 }
-fun countRootToLeafPaths(root: BinaryTreeNode<Point>): Int {
-    println("checking ${root.value}")
-    if (root.checked == 2) return 0
-    if (root.left == null && root.right == null) return 1
-    //print("doing ${root.left?.value?.x} ${root.left?.value?.y}")
-    root.checked++
-    return countRootToLeafPaths(root.left!!) + countRootToLeafPaths(root.right!!)
+fun countRootToLeafPaths(node: BinaryTreeNode<Point>?, memo: MutableMap<BinaryTreeNode<Point>, Long>): Long {
+    if (node == null) return 0
+    memo[node]?.let { return it }
+    if (node.left == null && node.right == null) return 1
+    val totalPaths = countRootToLeafPaths(node.left, memo) + countRootToLeafPaths(node.right, memo)
+    memo[node] = totalPaths
+    return totalPaths
 }
-fun countNodes(node: BinaryTreeNode<Point>?): Int {
-    if (node == null) {
-        return 0
-    }
-    return 1 + countNodes(node.left) + countNodes(node.right)
-}
-class BinaryTreeNode<T>(
-    val value: T,
-    var left: BinaryTreeNode<T>? = null,
-    var right: BinaryTreeNode<T>? = null,
-    var checked: Int = 0
-)
+
